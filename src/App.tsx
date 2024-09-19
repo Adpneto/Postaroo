@@ -1,14 +1,26 @@
-import { Button } from "./components/ui/button"
 import { ThemeProvider } from "./components/theme-provider"
-import { ModeToggle } from "./components/mode-toogle"
+import { Routes, Route } from "react-router-dom"
+import Home from "./pages/home"
+import Index from "./pages"
+import NotFound from "./pages/notFound"
+import Visitant from "./components/layouts/visitant"
+import Client from "./components/layouts/client"
 
 function App() {
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Button>Hello world</Button>
-      <ModeToggle/>
-    </ThemeProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <Routes>
+          <Route element={<Visitant/>}>
+            <Route path="/" element={<Index/>}/>
+          </Route>
+          <Route element={<Client/>}>
+            <Route path="/home" element={<Home/>}/>
+          </Route>
+
+          <Route path="*" element={<NotFound/>}/>
+        </Routes>
+      </ThemeProvider>
   )
 }
 
