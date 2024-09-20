@@ -5,6 +5,7 @@ import Index from "./pages"
 import NotFound from "./pages/notFound"
 import Visitant from "./components/layouts/visitant"
 import Client from "./components/layouts/client"
+import Sign from "./pages/sign"
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route element={<Visitant/>}>
             <Route path="/" element={<Index/>}/>
+            <Route path="/sign" element={<Sign/>}/>
           </Route>
           <Route element={<Client/>}>
             <Route path="/home" element={<Home/>}/>

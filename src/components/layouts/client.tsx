@@ -3,9 +3,11 @@ import { ModeToggle } from "../mode-toogle";
 
 const Client = () => {
   return (
-    <div>
+    <div className="flex flex-col items-center">
+      <div className="m-4 flex flex-col items-center">
         <Outlet />
-        <ModeToggle/>
+        <ModeToggle />
+      </div>
     </div>
   )
 }

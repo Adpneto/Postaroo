@@ -3,11 +3,13 @@ import { ModeToggle } from "../mode-toogle";
 
 const Visitant = () => {
   return (
-    <div>
+    <div className="w-screen h-screen flex flex-col items-center">
+      <div className="h-screen flex flex-col items-center justify-center">
         <Outlet />
-        <ModeToggle/>
+        <ModeToggle />
+      </div>
     </div>
   )
 }
 
- export default Visitant;
+export default Visitant;
