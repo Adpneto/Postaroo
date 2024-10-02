@@ -51,8 +51,7 @@ export default function Home() {
 
           if (userSnapshot.exists()) {
             const data = userSnapshot.data() as UserData
-            setUserData(data);
-            console.log('Dados do usuário:', data)
+            setUserData(data)
 
             if (!data.isProfileComplete) {
               navigate('/complete-profile')
@@ -69,7 +68,7 @@ export default function Home() {
         navigate('/sign')
       }
       setLoading(false)
-    });
+    })
 
     const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
     const unsubscribePosts = onSnapshot(q, (querySnapshot) => {
@@ -85,29 +84,11 @@ export default function Home() {
     }
   }, [])
 
-  const handleAddPost = async () => {
-    if (auth.currentUser && newPost.trim() !== '' && userData) {
-      try {
-        await addDoc(collection(db, 'posts'), {
-          name: userData.name,
-          surname: userData.surname,
-          content: newPost,
-          userId: auth.currentUser.uid,
-          profilePicture: userData.profilePicture || null,
-          timestamp: new Date(),
-        });
-        setNewPost('')
-      } catch (error) {
-        console.error('Erro ao adicionar post:', error)
-      }
-    }
-  }
-
   const handleDeletePost = async (postId: string) => {
     try {
       await deleteDoc(doc(db, 'posts', postId))
     } catch (error) {
-      console.error('Erro ao deletar post:', error);
+      console.error('Erro ao deletar post:', error)
     }
   }
 
@@ -123,8 +104,24 @@ export default function Home() {
     return colors[index]
   }
 
-  const onSubmit = () => {
-  }
+  const onSubmit = async (data: { bio: string }) => {
+    if (auth.currentUser && userData) {
+      try {
+        await addDoc(collection(db, 'posts'), {
+          name: userData.name,
+          surname: userData.surname,
+          content: data.bio,  // Usando o valor validado pelo form
+          userId: auth.currentUser.uid,
+          profilePicture: userData.profilePicture || null,
+          timestamp: new Date(),
+        });
+        setNewPost('') // Limpa o campo após postagem
+        form.reset()   // Reseta o estado do form
+      } catch (error) {
+        console.error('Erro ao adicionar post:', error)
+      }
+    }
+  }  
 
   return (
     <div className='w-full flex flex-col items-center m-5'>
@@ -146,13 +143,11 @@ export default function Home() {
                         {...field}
                         placeholder="Conte-nos um pouco sobre você"
                         className="resize-none h-32"
-                        value={newPost}
-                        onChange={(e) => setNewPost(e.target.value)}
                       />
                     </FormControl>
                     <FormDescription className='flex justify-between'>
                       <span className="font-bold">Você pode @mencionar outros usuários e organizações.</span>
-                      <Button type="submit" variant={'outline'} className='w-40' onClick={handleAddPost}>Compartilhar</Button>
+                      <Button type="submit" variant={'outline'} className='w-40'>Compartilhar</Button>
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -180,9 +175,10 @@ export default function Home() {
                     <p className='text-xs opacity-80 font-extralight'>{new Date(post.timestamp.seconds * 1000).toLocaleString()}</p>
                   </div>
                 </div>
-                <p className='text-lg'>{post.content}</p>
+                <p className='text-lg' style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
                 {auth.currentUser?.uid === post.userId && (
-                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' onClick={() => handleDeletePost(post.id)}><X /></Button>
+                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' 
+                  onClick={() => handleDeletePost(post.id)}><X /></Button>
                 )}
               </Card>
             ))}
