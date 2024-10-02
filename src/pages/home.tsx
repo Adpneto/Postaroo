@@ -37,8 +37,8 @@ const FormSchema = z.object({
 export default function Home() {
   const [userData, setUserData] = useState<UserData | undefined>(undefined)
   const [loading, setLoading] = useState(true)
-  const [newPost, setNewPost] = useState<string>('')
   const [posts, setPosts] = useState<Post[]>([])
+  const [bioError, setBioError] = useState(false) // Estado para controlar o erro de bio
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -105,28 +105,34 @@ export default function Home() {
   }
 
   const onSubmit = async (data: { bio: string }) => {
+    if (data.bio.length < 10) {
+      setBioError(true); // Define o erro se o comprimento for menor que 10
+      return;
+    } else {
+      setBioError(false); // Limpa o erro se o comprimento for válido
+    }
+
     if (auth.currentUser && userData) {
       try {
         await addDoc(collection(db, 'posts'), {
           name: userData.name,
           surname: userData.surname,
-          content: data.bio,  // Usando o valor validado pelo form
+          content: data.bio, 
           userId: auth.currentUser.uid,
           profilePicture: userData.profilePicture || null,
           timestamp: new Date(),
-        });
-        setNewPost('') // Limpa o campo após postagem
-        form.reset()   // Reseta o estado do form
+        })
+        form.setValue('bio', ''); // Limpa o campo de texto
       } catch (error) {
-        console.error('Erro ao adicionar post:', error)
+        console.error('Erro ao adicionar post:', error);
       }
     }
-  }  
+  }
 
   return (
     <div className='w-full flex flex-col items-center m-5'>
       {loading ? (
-        <Sekeleton/>
+        <Sekeleton />
       ) : userData ? (
         <div className='lg:w-[900px] space-y-10'>
           <h1 className='text-3xl font-semibold'>Bem-vindo, {userData.name} {userData.surname}!</h1>
@@ -147,14 +153,24 @@ export default function Home() {
                     </FormControl>
                     <FormDescription className='flex justify-between'>
                       <span className="font-bold">Você pode @mencionar outros usuários e organizações.</span>
-                      <Button type="submit" variant={'outline'} className='w-40'>Compartilhar</Button>
+                      <Button 
+                        type="submit" 
+                        variant={'outline'} 
+                        className='w-40'
+                      >
+                        Compartilhar
+                      </Button>
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {bioError && (
+                <p className="text-red-500">O texto deve conter pelo menos 10 caracteres.</p>
+              )}
             </form>
           </Form>
+
           <div>
             {posts.map((post) => (
               <Card key={post.id} className='relative flex flex-col px-8 py-6 mb-4 gap-2'>
@@ -175,10 +191,10 @@ export default function Home() {
                     <p className='text-xs opacity-80 font-extralight'>{new Date(post.timestamp.seconds * 1000).toLocaleString()}</p>
                   </div>
                 </div>
-                <p className='text-lg' style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
+                <p className='text-lg' style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word' }}>{post.content}</p>
                 {auth.currentUser?.uid === post.userId && (
-                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' 
-                  onClick={() => handleDeletePost(post.id)}><X /></Button>
+                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1'
+                    onClick={() => handleDeletePost(post.id)}><X /></Button>
                 )}
               </Card>
             ))}
