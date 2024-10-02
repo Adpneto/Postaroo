@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { Button } from './ui/button'
 import { Edit, LogOut, Settings, User } from 'lucide-react'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
-import { auth } from '@/firebaseConfig'
+import { auth, storage } from '@/firebaseConfig' // Adiciona o storage aqui
 import { useUser } from '@/lib/useUser'
 import { UserData } from '@/interfaces/UserData'
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage" // Importa as funções do storage
 
 export default function Header() {
   const { userData, loadUserData, updateProfile, logout } = useUser()
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const [tempUserData, setTempUserData] = useState<UserData | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null) // Estado para armazenar o arquivo selecionado
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -38,14 +41,33 @@ export default function Header() {
   }
 
   const handleProfileUpdate = async () => {
-    if (tempUserData) {
-      await updateProfile({
-        name: tempUserData.name,
-        surname: tempUserData.surname,
-        username: tempUserData.username,
-        gender: tempUserData.gender,
-      })
-      setIsDialogOpen(false)
+    try {
+      let profilePictureUrl = tempUserData?.profilePicture || undefined // Converte null para undefined
+  
+      if (selectedFile) {
+        // Upload da nova foto para o Firebase Storage
+        const storageRef = ref(storage, `profilePictures/${auth.currentUser?.uid}`)
+        await uploadBytes(storageRef, selectedFile)
+        profilePictureUrl = await getDownloadURL(storageRef) // Obtém a URL da imagem
+      }
+  
+      if (tempUserData) {
+        await updateProfile({
+          ...tempUserData,
+          profilePicture: profilePictureUrl, // Atualiza a URL da foto no perfil
+        })
+        setIsDialogOpen(false)
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar o perfil:', error)
+    }
+  }
+  
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setSelectedFile(file)
     }
   }
 
@@ -65,17 +87,21 @@ export default function Header() {
               <DialogDescription>Faça alterações em seu perfil aqui. Clique em salvar quando terminar.</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              {/* Formulário de Edição de Perfil */}
               <div className="flex gap-2">
-                <div>
-                  <div className="relative group">
-                    {tempUserData?.profilePicture ? (
-                      <img src={tempUserData.profilePicture} alt="Foto de Perfil" className="rounded-full w-20 cursor-pointer object-cover" />
-                    ) : (
-                      <User className="w-20 h-20 text-white" />
-                    )}
-                    <Edit className="absolute inset-0 m-auto w-6 h-6 text-white opacity-0 group-hover:opacity-100 cursor-pointer" />
-                  </div>
+                <div className="relative group">
+                  {tempUserData?.profilePicture ? (
+                    <img src={tempUserData.profilePicture} alt="Foto de Perfil" className="rounded-full w-20 cursor-pointer object-cover" />
+                  ) : (
+                    <User className="w-20 h-20 text-white" />
+                  )}
+                  <Edit className="absolute inset-0 m-auto w-6 h-6 text-white opacity-0 group-hover:opacity-100 cursor-pointer" onClick={() => fileInputRef.current?.click()} />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange} // Atualiza o arquivo selecionado
+                  />
                 </div>
                 <div>
                   <Label htmlFor="name">Nome</Label>
@@ -84,7 +110,7 @@ export default function Header() {
                       id="name"
                       value={tempUserData?.name || ''}
                       className="w-full"
-                      onChange={(e) => handleChange('name', e.target.value)} // Atualiza tempUserData
+                      onChange={(e) => handleChange('name', e.target.value)}
                     />
                     <Input
                       id="surname"

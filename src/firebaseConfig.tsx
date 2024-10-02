@@ -3,6 +3,7 @@ import { getAuth, User } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { createContext, useContext, useEffect, useState, ReactNode } from "react"
 import { setPersistence, browserLocalPersistence } from "firebase/auth"
+import { getStorage } from "firebase/storage"
 
 const firebaseConfig = {
   apiKey: "AIzaSyA-ZzwRXDU8xbaTlMNST0s0BCkaBKqHt78",
@@ -17,6 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
+export const storage = getStorage(app)
 
 export interface AuthContextType {
   currentUser: User | null

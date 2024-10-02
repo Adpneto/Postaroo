@@ -43,33 +43,32 @@ export default function Home() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setLoading(true); // Inicia o carregamento
+      setLoading(true)
       if (user) {
         try {
-          const userDoc = doc(db, 'users', user.uid);
-          const userSnapshot = await getDoc(userDoc);
+          const userDoc = doc(db, 'users', user.uid)
+          const userSnapshot = await getDoc(userDoc)
 
           if (userSnapshot.exists()) {
-            const data = userSnapshot.data() as UserData;
+            const data = userSnapshot.data() as UserData
             setUserData(data);
-            console.log('Dados do usuário:', data);
+            console.log('Dados do usuário:', data)
 
-            // Verifique se o perfil está completo
             if (!data.isProfileComplete) {
-              navigate('/complete-profile');
+              navigate('/complete-profile')
             }
           } else {
-            console.log('Nenhum dado do usuário encontrado.');
-            navigate('/complete-profile');
+            console.log('Nenhum dado do usuário encontrado.')
+            navigate('/complete-profile')
           }
         } catch (error) {
-          console.error('Erro ao buscar os dados do usuário:', error);
+          console.error('Erro ao buscar os dados do usuário:', error)
         }
       } else {
-        console.log('Usuário não autenticado');
-        navigate('/sign');
+        console.log('Usuário não autenticado')
+        navigate('/sign')
       }
-      setLoading(false); // Finaliza o carregamento
+      setLoading(false)
     });
 
     const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
