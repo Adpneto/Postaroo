@@ -1,0 +1,341 @@
+{
+    "pages": {
+        "dashboard": {
+            "charts": {
+                "select": "Select the time",
+                "90d": "Last 3 months",
+                "30d": "Last 30 days",
+                "7d": "Last 7 days",
+                "one": {
+                    "title": "Conversations by Users",
+                    "description": "Total Conversations by Users in months"
+                },
+                "two": {
+                    "title": "Conversations by Users",
+                    "description": "Total Conversations by Users in months"
+                }
+            },
+            "cards": {
+                "userCall": {
+                    "title": " Active Conversations",
+                    "description": "Users on calls"
+                },
+                "waiting": {
+                    "title": " Waiting",
+                    "description": "Users waiting"
+                },
+                "finished": {
+                    "title": " Finished",
+                    "description": "Finished attendances"
+                },
+                "ACT": {
+                    "title": " Average Call Time",
+                    "description": "Average time on calls"
+                },
+                "AWT": {
+                    "title": " Average Wait Time",
+                    "description": "Average wait time"
+                },
+                "active": {
+                    "title": " Active Conversations",
+                    "description": "Users on calls"
+                }
+            }
+        },
+        "login": {
+            "signin": "Sign In",
+            "password": "Password",
+            "rememberPassword": "Remember your password?",
+            "signInRemember": "Sign up now! / Forgot my password"
+        },
+        "register": {
+            "signup": "Sign Up",
+            "corp_name": "Company Name",
+            "id": "CPF/CNPJ",
+            "email": "Email",
+            "password": "Password",
+            "confirm_password": "Confirm Password",
+            "phone_number": "Phone with (DDD)",
+            "terms": "Accept terms of use",
+            "termsDesc": "You agree to our Terms of Service and Privacy Policy.",
+            "plans": {
+                "start": {
+                    "name": "START",
+                    "queue": "1x Queue",
+                    "employees": "1x Attendant",
+                    "whatsapp": "1x WhatsApp",
+                    "price": "R$ 97,00"
+                },
+                "plus": {
+                    "name": "PLUS",
+                    "queue": "3x Queue",
+                    "employees": "5x Attendant",
+                    "whatsapp": "3x WhatsApp",
+                    "price": "R$ 197,00"
+                },
+                "pro": {
+                    "name": "PRO",
+                    "queue": "100x Queue",
+                    "employees": "100x Attendant",
+                    "whatsapp": "100x WhatsApp",
+                    "price": "R$ 497,00"
+                }
+            }
+        },
+        "prompts": {
+            "table_name": "Token Table",
+            "search": "Search...",
+            "add": "Add",
+            "modal": {
+                "add": "Add New Token",
+                "edit": "Edit Token",
+                "name": "Name",
+                "sector": "Sector/Queue",
+                "max": "Max Tokens Response",
+                "save": "Save",
+                "addNew": "Add"
+            },
+            "table": {
+                "name": "Name",
+                "sector": "Sector/Queue",
+                "max": "Max Tokens Response",
+                "actions": "Actions",
+                "null": "No results found."
+            }
+        },
+        "quickresponses": {
+            "table_name": "Quick Responses",
+            "search": "Search...",
+            "add": "Add",
+            "modal": {
+                "add": "Add New Shortcut",
+                "edit": "Edit Shortcut",
+                "name": "Name",
+                "message": "Add a message",
+                "insertName": "Name",
+                "insertFirstName": "First Name",
+                "insertProtocol": "Protocol",
+                "insertHour": "Hour",
+                "insertMS": "Greetings",
+                "save": "Save",
+                "addFile": "Attach File",
+                "addNew": "Add"
+            },
+            "table": {
+                "name": "Shortcut",
+                "message": "Message(s)",
+                "file": "File(s)",
+                "actions": "Actions",
+                "noFile": "None",
+                "null": "No results found."
+            }
+        },
+        "tags": {
+            "table_name": "Tags",
+            "search": "Search...",
+            "add": "Add",
+            "modal": {
+                "add": "Add New Tag",
+                "edit": "Edit Tag",
+                "name": "Tag Name",
+                "selectColor": "Choose Color",
+                "isKanban": "Kanban",
+                "save": "Save",
+                "addNew": "Add"
+            },
+            "table": {
+                "name": "Tag",
+                "sector": "In Use",
+                "isKanban": "Kanban?",
+                "actions": "Actions",
+                "null": "No tags found."
+            }
+        },
+        "payments": {
+            "table_name": "Invoice Payments",
+            "table": {
+                "plan": "Plan",
+                "amount": "Amount",
+                "status": "Status",
+                "actions": "Actions",
+                "pay": "Pay"
+            },
+            "dialog": {
+                "title": "Payment Process",
+                "planDetails": "Current Plan Details",
+                "plan": "Plan",
+                "amount": "Amount",
+                "step2": "Customize Your Plan",
+                "step2Datails": "You can continue with this current plan or change it for the next month!",
+                "dueDate": "Due Date",
+                "payment": "Payment",
+                "enterPaymentDetails": "Enter Payment Details",
+                "paymentMethods": "Payment Methods",
+                "choosePaymentMethod": "Choose Payment Method:",
+                "creditCard": "Credit Card",
+                "boleto": "Boleto",
+                "pix": "PIX",
+                "cardNumber": "Card Number",
+                "expirationDate": "Expiration Date",
+                "cvv": "CVV",
+                "payNow": "Pay Now",
+                "generateBoleto": "Generate Boleto",
+                "payWithPix": "Pay with PIX",
+                "previous": "Previous",
+                "next": "Next",
+                "close": "Close",
+                "paymentProcessed": "Payment processed successfully!",
+                "pixInstructions": "Use the QR code to pay with PIX, payment information will be sent by email!",
+                "boletoInstructions": "A boleto has been generated. Pay it at your bank or payment app, payment information will be sent by email!"
+            }
+        },
+        "users": {
+            "table_name": "Registered Users",
+            "search": "Search...",
+            "add": "Add",
+            "modal": {
+                "add": "Add New User",
+                "edit": "Edit User",
+                "name": "Name",
+                "password": "Password",
+                "mail": "Email",
+                "typeUser": {
+                    "input": "Role",
+                    "admin": "Administrator",
+                    "user": "User"
+                },
+                "queue": {
+                    "input": "Queue"
+                },
+                "conection": {
+                    "input": "Default Connection"
+                },
+                "permission": {
+                    "input": "Permission",
+                    "on": "Enabled",
+                    "off": "Disabled"
+                },
+                "save": "Save",
+                "addNew": "Add"
+            },
+            "table": {
+                "id": "ID",
+                "name": "Name",
+                "mail": "Email",
+                "permission": "Role",
+                "queue": "Queue",
+                "actions": "Actions",
+                "null": "No results found."
+            }
+        },
+        "queue": {
+            "table_name": "Queues & Chatbot",
+            "search": "Search...",
+            "add": "Add",
+            "modal": {
+                "add": "Add Queue",
+                "edit": "Edit Queue",
+                "name": "Name",
+                "colorSelect": "Color",
+                "queue": "Queue Order (BOT)",
+                "integration": "Integration",
+                "prompt": "Prompt",
+                "message": "Greeting Message",
+                "options": "Chatbot Functions",
+                "untitledFunction": "Untitled",
+                "functionTitle": "Function Title",
+                "functionText": "Option Text",
+                "addFunction": "Add Functions",
+                "addSubFunction": "Add Sub Function",
+                "deleteFunction": "Delete Function",
+                "save": "Save",
+                "addNew": "Add"
+            },
+            "table": {
+                "name": "Name",
+                "queue": "Queue Order (BOT)",
+                "message": "Text",
+                "actions": "Actions",
+                "null": "No results found."
+            }
+        }
+    },
+    "formSchema": {
+        "login": {
+            "id": {
+                "required_error": "Please provide the CPF/CNPJ.",
+                "nonempty": "CPF/CNPJ is required!"
+            },
+            "password": {
+                "required_error": "Please provide your account password.",
+                "min": "Your password must contain at least 8 characters.",
+                "max": "Your password must contain a maximum of 36 characters.",
+                "regex_uppercase": "The password must contain at least one uppercase letter.",
+                "regex_lowercase": "The password must contain at least one lowercase letter.",
+                "regex_special": "The password must contain at least one special character."
+            }
+        },
+        "register": {
+            "corp_name": {
+                "required_error": "Enter your company's name.",
+                "min": "Your company's name must be more than 2 characters long.",
+                "max": "Your company's name must be at most 50 characters long.",
+                "nonempty": "Company name is required!",
+                "regex": "The company's name should not contain special characters!"
+            },
+            "id": {
+                "required_error": "Enter your CPF/CNPJ.",
+                "nonempty": "CPF/CNPJ is required!"
+            },
+            "email": {
+                "required_error": "Enter your company's email.",
+                "email": "Enter a valid email!"
+            },
+            "password": {
+                "required_error": "Enter your account password.",
+                "min": "Your password must be at least 8 characters long.",
+                "max": "Your password must be at most 36 characters long.",
+                "regex_uppercase": "The password must contain at least one uppercase letter.",
+                "regex_lowercase": "The password must contain at least one lowercase letter.",
+                "regex_special": "The password must contain at least one special character.",
+                "refine": "Passwords do not match!"
+            },
+            "confirm_password": {
+                "required_error": "Confirm your password.",
+                "min": "Your password must be at least 8 characters long.",
+                "max": "Your password must be at most 50 characters long."
+            },
+            "phone_number": {
+                "required_error": "Enter your company's phone number.",
+                "length": "The number must be 11 digits long, including the area code."
+            },
+            "plans": {
+                "required_error": "Please select a plan."
+            }
+        }
+    },
+    "components": {
+        "sidebar": {
+            "dashboard": "Dashboard",
+            "services": "Services",
+            "kanban": "Kanban",
+            "quickResponses": "Quick Responses",
+            "tasks": "Tasks",
+            "contacts": "Contacts",
+            "Appointments": "Appointments",
+            "tags": "Tags",
+            "internalChat": "Internal Chat",
+            "help": "Help",
+            "admin": "Administration",
+            "prompts": "ChatGPT",
+            "integrations": "Integrations",
+            "conections": "Connections",
+            "listArchives": "File List",
+            "queue": "Queues & Chatbot",
+            "users": "Users",
+            "api": "API",
+            "financial": "Financial",
+            "configs": "Settings"
+        }
+    }
+}

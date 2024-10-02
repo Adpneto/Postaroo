@@ -1,0 +1,75 @@
+{
+    "pages": {
+        "login": {
+            "signin": "Entrar",
+            "password": "Senha",
+            "rememberPassword": "Lembrar da sua senha?",
+            "signInRemember": "Registre-se, agora mesmo! / Esqueci minha senha"
+        },
+        "register": {
+            "signup": "Entrar",
+            "corp_name": "Nome da Empresa",
+            "id": "CPF/CNPJ",
+            "email": "Email",
+            "password": "Senha",
+            "confirm_password": "Comfirme a Senha",
+            "phone_number": "Telefone com (DDD)",
+            "terms": "Aceitar termos de uso",
+            "termsDesc": "Você concorda com nossos Termos de Serviço e Política de Privacidade."
+        }
+    },
+    "formSchema": {
+        "login": {
+            "id": {
+                "required_error": "Informe o CPF/CNPJ.",
+                "nonempty": "CPF/CNPJ é obrigatório!"
+            },
+            "password": {
+                "required_error": "Informe a senha da sua conta.",
+                "min": "Sua senha deve conter pelo menos 8 caracteres.",
+                "max": "Sua senha deve conter no máximo 36 caracteres.",
+                "regex_uppercase": "A senha deve conter pelo menos uma letra maiúscula.",
+                "regex_lowercase": "A senha deve conter pelo menos uma letra minúscula.",
+                "regex_special": "A senha deve conter pelo menos um caractere especial."
+            }
+        },
+        "register": {
+            "corp_name": {
+                "required_error": "Informe o nome da sua empresa.",
+                "min": "O nome da sua empresa deve conter mais de 2 caracteres.",
+                "max": "O nome da sua empresa deve conter no máximo 50 caracteres.",
+                "nonempty": "Nome da empresa é obrigatório!",
+                "regex": "O nome da empresa não deve conter caracteres especiais!"
+            },
+            "id": {
+                "required_error": "Informe o CPF/CNPJ.",
+                "nonempty": "CPF/CNPJ é obrigatório!"
+            },
+            "email": {
+                "required_error": "Informe o email da sua empresa.",
+                "email": "Informe um email válido!"
+            },
+            "password": {
+                "required_error": "Informe a senha da sua conta.",
+                "min": "Sua senha deve conter pelo menos 8 caracteres.",
+                "max": "Sua senha deve conter no máximo 36 caracteres.",
+                "regex_uppercase": "A senha deve conter pelo menos uma letra maiúscula.",
+                "regex_lowercase": "A senha deve conter pelo menos uma letra minúscula.",
+                "regex_special": "A senha deve conter pelo menos um caractere especial.",
+                "refine": "As senhas não coincidem"
+            },
+            "confirm_password": {
+                "required_error": "Confirme sua senha.",
+                "min": "Sua senha deve conter pelo menos 8 caracteres.",
+                "max": "Sua senha deve conter no máximo 50 caracteres."
+            },
+            "phone_number": {
+                "required_error": "Informe o número da sua empresa.",
+                "length": "O número deve conter 11 dígitos, incluindo o DDD."
+            },
+            "plans": {
+                "required_error": "Por favor, selecione um plano."
+            }
+        }
+    }
+}

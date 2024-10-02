@@ -5,4 +5,5 @@ export interface Post {
     content: string
     userId: string
     timestamp: any
+    profilePicture: string
   }

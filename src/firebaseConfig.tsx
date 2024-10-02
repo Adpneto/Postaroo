@@ -30,7 +30,7 @@ export const useAuth = () => {
     throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   }
   return context
-};
+}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -45,12 +45,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       })
       .catch((error) => {
         console.error("Erro ao configurar a persistência:", error)
-      });
-  }, []);
+      })
+  }, [])
 
   return (
     <AuthContext.Provider value={{ currentUser }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}

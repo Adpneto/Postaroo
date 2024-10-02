@@ -1,13 +1,5 @@
-import { useEffect, useState } from 'react'
-import { doc, getDoc, collection, addDoc, query, onSnapshot, deleteDoc, orderBy } from 'firebase/firestore'
-import { auth, db } from '../firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth'
-import { UserData } from '@/interfaces/UserData'
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { signOut } from 'firebase/auth'
 import { Button } from "@/components/ui/button"
+import { Card } from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -18,19 +10,27 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
-import { Card } from '@/components/ui/card'
-import { User, X } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 import { Post } from '@/interfaces/IPost'
+import { UserData } from '@/interfaces/UserData'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { onAuthStateChanged } from 'firebase/auth'
+import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { User, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from "react-hook-form"
+import { useNavigate } from 'react-router-dom'
+import { z } from "zod"
+import { auth, db } from '../firebaseConfig'
+import Sekeleton from "../components/skeleton"
 
 const FormSchema = z.object({
   bio: z
     .string()
     .min(10, {
-      message: "Seu post não pode conter menos de 10 characteres.",
+      message: "Seu post não pode conter menos de 10 caracteres.",
     })
     .max(400, {
-      message: "Seu post não pode conter mais de 400 characteres.",
+      message: "Seu post não pode conter mais de 400 caracteres.",
     }),
 })
 
@@ -43,40 +43,48 @@ export default function Home() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setLoading(true); // Inicia o carregamento
       if (user) {
         try {
-          const userDoc = doc(db, 'users', user.uid)
-          const userSnapshot = await getDoc(userDoc)
+          const userDoc = doc(db, 'users', user.uid);
+          const userSnapshot = await getDoc(userDoc);
 
           if (userSnapshot.exists()) {
-            const data = userSnapshot.data() as UserData
-            setUserData(data)
+            const data = userSnapshot.data() as UserData;
+            setUserData(data);
+            console.log('Dados do usuário:', data);
+
+            // Verifique se o perfil está completo
+            if (!data.isProfileComplete) {
+              navigate('/complete-profile');
+            }
           } else {
-            console.log('Nenhum dado do usuário encontrado.')
+            console.log('Nenhum dado do usuário encontrado.');
+            navigate('/complete-profile');
           }
         } catch (error) {
-          console.error('Erro ao buscar os dados do usuário:', error)
+          console.error('Erro ao buscar os dados do usuário:', error);
         }
       } else {
-        console.log('Usuário não autenticado')
-        return navigate('/sign')
+        console.log('Usuário não autenticado');
+        navigate('/sign');
       }
-      setLoading(false)
-    })
-    return () => unsubscribe()
-  }, [])
+      setLoading(false); // Finaliza o carregamento
+    });
 
-  useEffect(() => {
-    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'))
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const postsArray: Post[] = []
+    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+    const unsubscribePosts = onSnapshot(q, (querySnapshot) => {
+      const postsArray: Post[] = [];
       querySnapshot.forEach((doc) => {
         postsArray.push({ id: doc.id, ...doc.data() } as Post)
       })
-      setPosts(postsArray);
+      setPosts(postsArray)
     })
-    return () => unsubscribe()
-  }, []);
+    return () => {
+      unsubscribe()
+      unsubscribePosts()
+    }
+  }, [])
 
   const handleAddPost = async () => {
     if (auth.currentUser && newPost.trim() !== '' && userData) {
@@ -86,6 +94,7 @@ export default function Home() {
           surname: userData.surname,
           content: newPost,
           userId: auth.currentUser.uid,
+          profilePicture: userData.profilePicture || null,
           timestamp: new Date(),
         });
         setNewPost('')
@@ -107,29 +116,24 @@ export default function Home() {
     resolver: zodResolver(FormSchema),
   })
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth)
-      navigate('/sign')
-    } catch (error) {
-      console.error('Erro ao sair da conta:', error)
-    }
+  const getRandomColorById = (id: string): string => {
+    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#57FFA3', '#FFA333']
+    const defaultId = 'default'
+    const validId = id || defaultId
+    const index = parseInt(validId, 36) % colors.length
+    return colors[index]
   }
 
-  function onSubmit() {
-
+  const onSubmit = () => {
   }
 
   return (
     <div className='w-full flex flex-col items-center m-5'>
       {loading ? (
-        <h1>Carregando...</h1>
+        <Sekeleton/>
       ) : userData ? (
         <div className='lg:w-[900px] space-y-10'>
-          <div className='flex justify-between'>
-            <h1 className='text-3xl font-semibold'>Bem-vindo, {userData.name} {userData.surname}!</h1>
-            <Button onClick={handleLogout} variant={'outline'} className='text-zinc-500'>Sair</Button>
-          </div>
+          <h1 className='text-3xl font-semibold'>Bem-vindo, {userData.name} {userData.surname}!</h1>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -148,7 +152,7 @@ export default function Home() {
                       />
                     </FormControl>
                     <FormDescription className='flex justify-between'>
-                      <h1>Você pode <span>@mencionar</span> outros usuários e organizações.</h1>
+                      <span className="font-bold">Você pode @mencionar outros usuários e organizações.</span>
                       <Button type="submit" variant={'outline'} className='w-40' onClick={handleAddPost}>Compartilhar</Button>
                     </FormDescription>
                     <FormMessage />
@@ -161,7 +165,17 @@ export default function Home() {
             {posts.map((post) => (
               <Card key={post.id} className='relative flex flex-col px-8 py-6 mb-4 gap-2'>
                 <div className='w-fit flex items-center justify-center gap-4'>
-                  <User className="bg-indigo-900 rounded-full w-16 h-16 lg:w-16 lg:h-16 " />
+                  {post.profilePicture ? (
+                    <img
+                      src={post.profilePicture}
+                      alt="Foto de perfil"
+                      className="rounded-full w-16 h-16 lg:w-20 lg:h-20 object-cover"
+                    />
+                  ) : (
+                    <div className={`rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center`} style={{ backgroundColor: getRandomColorById(post.userId) }}>
+                      <User className="text-white w-8 h-8" />
+                    </div>
+                  )}
                   <div>
                     <p className='font-extrabold'>{post.name} {post.surname}</p>
                     <p className='text-xs opacity-80 font-extralight'>{new Date(post.timestamp.seconds * 1000).toLocaleString()}</p>
@@ -169,7 +183,7 @@ export default function Home() {
                 </div>
                 <p className='text-lg'>{post.content}</p>
                 {auth.currentUser?.uid === post.userId && (
-                  <button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' onClick={() => handleDeletePost(post.id)}><X /></button>
+                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' onClick={() => handleDeletePost(post.id)}><X /></Button>
                 )}
               </Card>
             ))}
