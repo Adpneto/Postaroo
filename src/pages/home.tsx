@@ -168,7 +168,7 @@ export default function Home() {
             <img
               src={selectedPost.post.imageUrl}
               alt="Imagem do post"
-              className="w-full rounded-md"
+              className="w-full rounded-md object-cover"
             />
           )}
 
