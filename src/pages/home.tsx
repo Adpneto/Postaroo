@@ -13,6 +13,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '../components/ui/dialog'
@@ -80,63 +81,62 @@ export default function Home() {
   }
 
   return (
-    <div className='w-full flex flex-col items-center m-5'>
-      <div className='lg:w-[900px] space-y-10'>
-        <div>
-          {postsLoading ? (
-            <>
-              {Array.from({ length: 3 }).map((_, index) => (
-                <Sekeleton key={index} />
-              ))}
-            </>
-          ) : (
-            posts.map(({ post, user }) => (
-              <Card key={post.id} className='relative flex flex-col mb-4 pb-5 gap-2 overflow-hidden'>
-                <div className='w-fit flex items-center justify-center gap-4 p-4 pb-0'>
-                  {user?.profilePicture ? (
-                    <img
-                      src={user.profilePicture}
-                      alt="Foto de perfil"
-                      className="rounded-full w-16 h-16 lg:w-20 lg:h-20 object-cover"
-                    />
-                  ) : (
-                    <div className={`rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center`} style={{ backgroundColor: getRandomColorById(post.userId) }}>
-                      <User className="text-white w-8 h-8" />
-                    </div>
-                  )}
-                  <div>
-                    <p className='font-extrabold'>{user?.name} {user?.surname}</p>
-                    <p className='text-xs opacity-80 font-extralight'>{new Date(post.timestamp.seconds * 1000).toLocaleString()}</p>
-                  </div>
-                </div>
-                <p className='text-lg px-4' style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
-                  {post.content.length > 200 ? `${post.content.slice(0, 200)}... ` : post.content}
-                  {post.content.length > 200 && (
-                    <Button
-                      variant='link'
-                      className='text-zinc-600 font-bold underline'
-                      onClick={() => handleViewMore(post, user)}
-                    >
-                      Ver mais
-                    </Button>
-                  )}
-                </p>
-                {post.imageUrl && (
+    <div className='w-full lg:w-[900px] flex flex-col items-center justify-center m-5'>
+      <div className='lg:w-[900px] flex flex-col items-center justify-center space-y-10'>
+        {postsLoading ? (
+          <>
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Sekeleton key={index} />
+            ))}
+          </>
+        ) : (
+          posts.map(({ post, user }) => (
+            <Card key={post.id} className='relative flex flex-col mb-4 pb-5 gap-2 md:w-[500px] overflow-hidden'>
+              <div className='w-fit flex items-center justify-center gap-4 p-4 pb-0'>
+                {user?.profilePicture ? (
                   <img
-                    src={post.imageUrl}
-                    alt="Imagem do post"
-                    className="w-[400px] lg:w-[500px]"
+                    src={user.profilePicture}
+                    alt="Foto de perfil"
+                    className="rounded-full w-16 h-16 lg:w-20 lg:h-20 object-cover"
                   />
+                ) : (
+                  <div className={`rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center`} style={{ backgroundColor: getRandomColorById(post.userId) }}>
+                    <User className="text-white w-8 h-8" />
+                  </div>
                 )}
-                {auth.currentUser?.uid === post.userId && (
-                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' onClick={() => handleDeletePost(post.id)}>
-                    <X />
+                <div>
+                  <p className='font-extrabold text-left'>@{user?.username}</p>
+                  <p className='opacity-70 text-sm text-left'>{user?.name} {user?.surname}</p>
+                </div>
+              </div>
+              <p className='text-lg px-4' style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+                {post.content.length > 200 ? `${post.content.slice(0, 200)}... ` : post.content}
+                {post.content.length > 200 && (
+                  <Button
+                    variant='link'
+                    className='text-zinc-600 font-bold underline'
+                    onClick={() => handleViewMore(post, user)}
+                  >
+                    Ver mais
                   </Button>
                 )}
-              </Card>
-            ))
-          )}
-        </div>
+              </p>
+              {post.imageUrl && (
+                <img
+                  src={post.imageUrl}
+                  alt="Imagem do post"
+                  className="w-[400px] lg:w-[500px]"
+                />
+              )}
+              {auth.currentUser?.uid === post.userId && (
+                <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' onClick={() => handleDeletePost(post.id)}>
+                  <X />
+                </Button>
+              )}
+              <p className='text-[0.7rem] opacity-20 text-right pr-4'>{new Date(post.timestamp.seconds * 1000).toLocaleString()}</p>
+            </Card>
+          ))
+        )}
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -147,7 +147,7 @@ export default function Home() {
                 <img
                   src={selectedPost.user.profilePicture}
                   alt="Foto de perfil"
-                  className="rounded-full w-12 h-12 object-cover"
+                  className="rounded-full w-16 h-16 object-cover"
                 />
               ) : (
                 <div className={`rounded-full w-12 h-12 flex items-center justify-center`} style={{ backgroundColor: getRandomColorById(selectedPost?.user?.id || '') }}>
@@ -155,8 +155,8 @@ export default function Home() {
                 </div>
               )}
               <div>
-                <p className='font-bold'>{selectedPost?.user?.name} {selectedPost?.user?.surname}</p>
-                <p className='text-sm opacity-70'>{new Date(selectedPost?.post.timestamp.seconds * 1000).toLocaleString()}</p>
+                <p className='font-bold text-lg text-left'>@{selectedPost?.user?.username}</p>
+                <p className='opacity-70 text-sm text-left'>{selectedPost?.user?.name} {selectedPost?.user?.surname}</p>
               </div>
             </div>
             <DialogTitle className="hidden">Post completo</DialogTitle>
@@ -171,6 +171,10 @@ export default function Home() {
               className="w-full rounded-md"
             />
           )}
+
+          <DialogFooter>
+            <p className='text-[0.7rem] opacity-20 text-right'>{new Date(selectedPost?.post.timestamp.seconds * 1000).toLocaleString()}</p>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
