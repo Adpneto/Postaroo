@@ -6,4 +6,5 @@ export interface Post {
   name: string 
   surname: string 
   profilePicture: string | null
+  imageUrl: string | null
 }

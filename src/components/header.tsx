@@ -19,6 +19,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import imageCompression from 'browser-image-compression'
 import { useNavigate } from 'react-router-dom'
+import NewPost from './newPost'
 
 export default function Header() {
   const [userData, setUserData] = useState<UserData | null>(null)
@@ -141,16 +142,17 @@ export default function Header() {
       <img src="logo.png" className='w-10' alt="Logo" />
       {isLoading ? (
         <div className='flex gap-2'>
-          <Button disabled size='icon' variant={'ghost'} className='text-zinc-500' onClick={handleDialogOpen}>
+          <Button disabled size='icon' variant={'ghost'} className='text-zinc-500'>
             <Settings />
           </Button>
-          <Button disabled size='icon' variant={'ghost'} className='text-zinc-500' onClick={handleDialogOpen}>
+          <Button disabled size='icon' variant={'ghost'} className='text-zinc-500'>
             <LogOut />
           </Button>
         </div>
       ) : (
         userData && (
           <div className='flex gap-2'>
+            <NewPost />
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button size='icon' variant={'ghost'} className='text-zinc-500' onClick={handleDialogOpen}>
