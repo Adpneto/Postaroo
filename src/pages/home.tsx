@@ -81,8 +81,8 @@ export default function Home() {
   }
 
   return (
-    <div className='w-full lg:w-[900px] flex flex-col items-center justify-center m-5'>
-      <div className='lg:w-[900px] flex flex-col items-center justify-center space-y-5'>
+    <div className='w-full lg:w-[600px] flex flex-col items-center justify-center m-5'>
+      <div className='lg:w-[600px] flex flex-col items-center justify-center space-y-5'>
         {postsLoading ? (
           <>
             {Array.from({ length: 3 }).map((_, index) => (
@@ -125,7 +125,7 @@ export default function Home() {
                 <img
                   src={post.imageUrl}
                   alt="Imagem do post"
-                  className="w-[400px] lg:w-[500px]"
+                  className="w-[400px] lg:w-[600px] h-[400px] object-cover"
                 />
               )}
               {auth.currentUser?.uid === post.userId && (
