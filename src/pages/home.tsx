@@ -35,31 +35,17 @@ const FormSchema = z.object({
 })
 
 export default function Home() {
-  const [userData, setUserData] = useState<UserData | undefined>(undefined)
-  const [loading, setLoading] = useState(true)
-  const [posts, setPosts] = useState<Post[]>([])
-  const [bioError, setBioError] = useState(false) // Estado para controlar o erro de bio
+  const [userData, setUserData] = useState<UserData | null>(null)
+  const [posts, setPosts] = useState<{ post: Post; user: UserData | null }[]>([])
+  const [bioError, setBioError] = useState(false)
+  const [postsLoading, setPostsLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setLoading(true)
       if (user) {
         try {
-          const userDoc = doc(db, 'users', user.uid)
-          const userSnapshot = await getDoc(userDoc)
-
-          if (userSnapshot.exists()) {
-            const data = userSnapshot.data() as UserData
-            setUserData(data)
-
-            if (!data.isProfileComplete) {
-              navigate('/complete-profile')
-            }
-          } else {
-            console.log('Nenhum dado do usuário encontrado.')
-            navigate('/complete-profile')
-          }
+          await loadUserData(user.uid)
         } catch (error) {
           console.error('Erro ao buscar os dados do usuário:', error)
         }
@@ -67,22 +53,44 @@ export default function Home() {
         console.log('Usuário não autenticado')
         navigate('/sign')
       }
-      setLoading(false)
     })
 
-    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
-    const unsubscribePosts = onSnapshot(q, (querySnapshot) => {
-      const postsArray: Post[] = [];
-      querySnapshot.forEach((doc) => {
-        postsArray.push({ id: doc.id, ...doc.data() } as Post)
-      })
+    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'))
+    const unsubscribePosts = onSnapshot(q, async (querySnapshot) => {
+      const postsArray: { post: Post; user: UserData | null }[] = []
+
+      setPostsLoading(true)
+      for (const docSnapshot of querySnapshot.docs) {
+        const postData = { id: docSnapshot.id, ...docSnapshot.data() } as Post
+        const userDoc = await getDoc(doc(db, 'users', postData.userId))
+        const userData = userDoc.exists() ? (userDoc.data() as UserData) : null
+        postsArray.push({ post: postData, user: userData })
+      }
       setPosts(postsArray)
+      setPostsLoading(false)
     })
     return () => {
       unsubscribe()
       unsubscribePosts()
     }
   }, [])
+
+  const loadUserData = async (userId: string) => {
+    const userDoc = doc(db, 'users', userId)
+    const userSnapshot = await getDoc(userDoc)
+
+    if (userSnapshot.exists()) {
+      const data = userSnapshot.data() as UserData
+      setUserData(data)
+
+      if (!data.isProfileComplete) {
+        navigate('/complete-profile')
+      }
+    } else {
+      console.log('Nenhum dado do usuário encontrado.')
+      navigate('/complete-profile')
+    }
+  }
 
   const handleDeletePost = async (postId: string) => {
     try {
@@ -106,10 +114,10 @@ export default function Home() {
 
   const onSubmit = async (data: { bio: string }) => {
     if (data.bio.length < 10) {
-      setBioError(true); // Define o erro se o comprimento for menor que 10
-      return;
+      setBioError(true)
+      return
     } else {
-      setBioError(false); // Limpa o erro se o comprimento for válido
+      setBioError(false)
     }
 
     if (auth.currentUser && userData) {
@@ -117,67 +125,70 @@ export default function Home() {
         await addDoc(collection(db, 'posts'), {
           name: userData.name,
           surname: userData.surname,
-          content: data.bio, 
+          content: data.bio,
           userId: auth.currentUser.uid,
           profilePicture: userData.profilePicture || null,
           timestamp: new Date(),
         })
-        form.setValue('bio', ''); // Limpa o campo de texto
+        form.setValue('bio', '')
+        await loadUserData(auth.currentUser.uid)
       } catch (error) {
-        console.error('Erro ao adicionar post:', error);
+        console.error('Erro ao adicionar post:', error)
       }
     }
   }
 
   return (
     <div className='w-full flex flex-col items-center m-5'>
-      {loading ? (
-        <Sekeleton />
-      ) : userData ? (
-        <div className='lg:w-[900px] space-y-10'>
-          <h1 className='text-3xl font-semibold'>Bem-vindo, {userData.name} {userData.surname}!</h1>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-lg'>Compartilhe seu pensamento</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Conte-nos um pouco sobre você"
-                        className="resize-none h-32"
-                      />
-                    </FormControl>
-                    <FormDescription className='flex justify-between'>
-                      <span className="font-bold">Você pode @mencionar outros usuários e organizações.</span>
-                      <Button 
-                        type="submit" 
-                        variant={'outline'} 
-                        className='w-40'
-                      >
-                        Compartilhar
-                      </Button>
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {bioError && (
-                <p className="text-red-500">O texto deve conter pelo menos 10 caracteres.</p>
+      <div className='lg:w-[900px] space-y-10'>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="bio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-lg'>Compartilhe seu pensamento</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Conte-nos um pouco sobre você"
+                      className="resize-none h-32"
+                    />
+                  </FormControl>
+                  <FormDescription className='flex justify-between'>
+                    <span className="font-bold">Você pode @mencionar outros usuários e organizações.</span>
+                    <Button
+                      type="submit"
+                      variant={'outline'}
+                      className='w-40'
+                    >
+                      Compartilhar
+                    </Button>
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
               )}
-            </form>
-          </Form>
-
-          <div>
-            {posts.map((post) => (
+            />
+            {bioError && (
+              <p className="text-red-500">O texto deve conter pelo menos 10 caracteres.</p>
+            )}
+          </form>
+        </Form>
+        <div>
+          {postsLoading ? (
+            <>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Sekeleton key={index} />
+              ))}
+            </>
+          ) : (
+            posts.map(({ post, user }) => (
               <Card key={post.id} className='relative flex flex-col px-8 py-6 mb-4 gap-2'>
                 <div className='w-fit flex items-center justify-center gap-4'>
-                  {post.profilePicture ? (
+                  {user?.profilePicture ? (
                     <img
-                      src={post.profilePicture}
+                      src={user.profilePicture}
                       alt="Foto de perfil"
                       className="rounded-full w-16 h-16 lg:w-20 lg:h-20 object-cover"
                     />
@@ -187,22 +198,21 @@ export default function Home() {
                     </div>
                   )}
                   <div>
-                    <p className='font-extrabold'>{post.name} {post.surname}</p>
+                    <p className='font-extrabold'>@{user?.username}</p>
                     <p className='text-xs opacity-80 font-extralight'>{new Date(post.timestamp.seconds * 1000).toLocaleString()}</p>
                   </div>
                 </div>
                 <p className='text-lg' style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word' }}>{post.content}</p>
                 {auth.currentUser?.uid === post.userId && (
-                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1'
-                    onClick={() => handleDeletePost(post.id)}><X /></Button>
+                  <Button className='absolute top-2 right-2 bg-transparent hover:text-gray-800 rounded-full p-1' onClick={() => handleDeletePost(post.id)}>
+                    <X />
+                  </Button>
                 )}
               </Card>
-            ))}
-          </div>
+            ))
+          )}
         </div>
-      ) : (
-        <h1>Nenhum dado do usuário encontrado.</h1>
-      )}
+      </div>
     </div>
   )
 }

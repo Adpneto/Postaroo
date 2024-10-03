@@ -8,5 +8,5 @@ export interface UserData {
     phone_number?: string
     gender?: string
     isProfileComplete: boolean
-    profilePicture: string
+    profilePicture?: string
 }

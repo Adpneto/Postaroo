@@ -44,32 +44,34 @@ const ProfileCompletion = () => {
     }
 
     return (
-        <Card className='py-2 px-4 flex flex-col items-center justify-center space-y-2'>
-            <img src="logo.png" className='w-14' alt="" />
-            <form onSubmit={form.handleSubmit(handleCompleteProfile)} className='flex flex-col items-center gap-2'>
-                <h1 className='font-semibold text-2xl'>Complete seu cadastro</h1>
-                <Input {...form.register('username')} placeholder='Nome de Usuario' required />
-                <div className='flex gap-2'>
-                    <Input {...form.register('name')} placeholder='Nome' required />
-                    <Input {...form.register('surname')} placeholder='Sobrenome' required />
-                </div>
-                <Input {...form.register('phone_number')} placeholder='(DDD) Numero de telefone' required />
-                <Select
-                    defaultValue="others"
-                    onValueChange={(value) => form.setValue('gender', value)} // Atualiza o valor do campo 'gender'
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Gênero" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="male">Masculino</SelectItem>
-                        <SelectItem value="female">Feminino</SelectItem>
-                        <SelectItem value="others">Outros</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Button variant={'outline'} type='submit'>Salvar</Button>
-            </form>
-        </Card>
+        <div className='flex items-center justify-center h-screen'>
+            <Card className='m-2 py-2 px-4 flex flex-col items-center justify-center space-y-2'>
+                <img src="logo.png" className='w-14' alt="" />
+                <form onSubmit={form.handleSubmit(handleCompleteProfile)} className='flex flex-col items-center gap-2'>
+                    <h1 className='font-semibold text-2xl'>Complete seu cadastro</h1>
+                    <Input {...form.register('username')} placeholder='Nome de Usuario' required />
+                    <div className='flex gap-2'>
+                        <Input {...form.register('name')} placeholder='Nome' required />
+                        <Input {...form.register('surname')} placeholder='Sobrenome' required />
+                    </div>
+                    <Input {...form.register('phone_number')} placeholder='(DDD) Numero de telefone' required />
+                    <Select
+                        defaultValue="others"
+                        onValueChange={(value) => form.setValue('gender', value)}
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Gênero" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="male">Masculino</SelectItem>
+                            <SelectItem value="female">Feminino</SelectItem>
+                            <SelectItem value="others">Outros</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Button variant={'outline'} type='submit'>Salvar</Button>
+                </form>
+            </Card>
+        </div>
     )
 }
 
