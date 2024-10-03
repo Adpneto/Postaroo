@@ -167,7 +167,7 @@ export default function Header() {
                 <div className="gap-4 py-4 flex flex-col justify-center items-center">
                   <div className="relative group">
                     {tempUserData?.profilePicture ? (
-                      <img src={tempUserData.profilePicture} alt="Foto de Perfil" className="rounded-full w-40 cursor-pointer object-cover" onClick={() => fileInputRef.current?.click()} />
+                      <img src={tempUserData.profilePicture} alt="Foto de Perfil" className="rounded-full w-40 h-40 cursor-pointer object-cover" onClick={() => fileInputRef.current?.click()} />
                     ) : (
                       <User className="bg-purple-900 p-2 rounded-full w-40 h-40 text-white" onClick={() => fileInputRef.current?.click()} />
                     )}
