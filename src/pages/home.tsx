@@ -82,7 +82,7 @@ export default function Home() {
 
   return (
     <div className='w-full lg:w-[900px] flex flex-col items-center justify-center m-5'>
-      <div className='lg:w-[900px] flex flex-col items-center justify-center space-y-10'>
+      <div className='lg:w-[900px] flex flex-col items-center justify-center space-y-5'>
         {postsLoading ? (
           <>
             {Array.from({ length: 3 }).map((_, index) => (
@@ -91,7 +91,7 @@ export default function Home() {
           </>
         ) : (
           posts.map(({ post, user }) => (
-            <Card key={post.id} className='relative flex flex-col mb-4 pb-5 gap-2 md:w-[500px] overflow-hidden'>
+            <Card key={post.id} className='relative flex flex-col pb-5 gap-2 w-full overflow-hidden'>
               <div className='w-fit flex items-center justify-center gap-4 p-4 pb-0'>
                 {user?.profilePicture ? (
                   <img
