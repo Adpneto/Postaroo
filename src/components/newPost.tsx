@@ -27,6 +27,7 @@ import {
 	DialogTrigger,
 } from './ui/dialog'
 import { CopyPlus, ImagePlus, X } from "lucide-react"
+import { DialogDescription } from "@radix-ui/react-dialog"
 
 const FormSchema = z.object({
 	bio: z
@@ -147,7 +148,8 @@ export default function NewPost() {
 				</DialogTrigger>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Novo Post</DialogTitle>
+						<DialogTitle className="hidden">Novo Post</DialogTitle>
+						<DialogDescription className="hidden">Faça um novo post</DialogDescription>
 					</DialogHeader>
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -203,8 +205,7 @@ export default function NewPost() {
 							{bioError && (
 								<p className="text-red-500">O texto deve conter pelo menos 10 caracteres.</p>
 							)}
-							<DialogFooter>
-								<span className="font-bold text-xs text-zinc-500">Você pode @mencionar outros usuários e organizações.</span>
+							<DialogFooter className="flex flex-row-reverse gap-4 justify-between">
 								<Button
 									type="submit"
 									variant={'outline'}
@@ -213,6 +214,7 @@ export default function NewPost() {
 								>
 									{posting ? "Postando..." : "Compartilhar"}
 								</Button>
+								<span className="font-bold text-xs text-zinc-500">Você pode @mencionar outros usuários e organizações.</span>
 							</DialogFooter>
 						</form>
 					</Form>
