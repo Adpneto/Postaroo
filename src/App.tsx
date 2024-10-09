@@ -6,22 +6,25 @@ import Visitant from "./components/layouts/layout-base"
 import Sign from "./pages/sign"
 import { TooltipProvider } from "./components/ui/tooltip"
 import ProfileCompletion from "./pages/completeProfile"
+import { ToastProvider } from "./components/ui/toast"
 
 function App() {
 
   return (
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ToastProvider>
         <TooltipProvider>
           <Routes>
-            <Route element={<Visitant/>}>
-              <Route path="/" element={<Home/>}/>
+            <Route element={<Visitant />}>
+              <Route path="/" element={<Home />} />
             </Route>
-            <Route path="/sign" element={<Sign/>}/>
-            <Route path="/complete-profile" element={<ProfileCompletion/>}/>
-            <Route path="*" element={<NotFound/>}/>
+            <Route path="/sign" element={<Sign />} />
+            <Route path="/complete-profile" element={<ProfileCompletion />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>
-      </ThemeProvider>
+      </ToastProvider>
+    </ThemeProvider>
   )
 }
 

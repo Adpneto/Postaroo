@@ -139,7 +139,10 @@ export default function Header() {
 
   return (
     <div className='w-full lg:w-[900px] m-5 flex justify-between'>
-      <img src="logo.png" className='w-10' alt="Logo" />
+      <div className='flex items-center gap-4'>
+        <img src="logo.png" className='w-10' alt="Logo" />
+        <h1 className='text-white font-extrabold text-2xl sm:block hidden'>Postaroo</h1>
+      </div>
       {isLoading ? (
         <div className='flex gap-2'>
           <Button disabled size='icon' variant={'ghost'} className='text-zinc-500'>

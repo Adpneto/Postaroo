@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../components/ui/dialog'
+import { useToast } from "@/hooks/use-toast"
 
 export default function Home() {
   const [posts, setPosts] = useState<{ post: Post; user: UserData | null }[]>([])
@@ -24,40 +25,50 @@ export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<{ post: Post; user: UserData | null } | null>(null);
   const navigate = useNavigate()
+  const { toast } = useToast()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          const userData = userDoc.exists() ? userDoc.data() : null;
+  
+          if (userData) {
+            toast({
+              title: `Olá, ${userData.name} ${userData.surname}, seja bem-vindo de volta!`
+            });
+          }
         } catch (error) {
-          console.error('Erro ao buscar os dados do usuário:', error)
+          console.error('Erro ao buscar os dados do usuário:', error);
         }
       } else {
-        console.log('Usuário não autenticado')
-        navigate('/sign')
+        console.log('Usuário não autenticado');
+        navigate('/sign');
       }
-    })
-
+    });
+  
     const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
     const unsubscribePosts = onSnapshot(q, async (querySnapshot) => {
       const postsArray: { post: Post; user: UserData | null }[] = [];
-
-      setPostsLoading(true)
+  
+      setPostsLoading(true);
       for (const docSnapshot of querySnapshot.docs) {
-        const postData = { id: docSnapshot.id, ...docSnapshot.data() } as Post
-        const userDoc = await getDoc(doc(db, 'users', postData.userId))
-        const userData = userDoc.exists() ? (userDoc.data() as UserData) : null
-        postsArray.push({ post: postData, user: userData })
+        const postData = { id: docSnapshot.id, ...docSnapshot.data() } as Post;
+        const userDoc = await getDoc(doc(db, 'users', postData.userId));
+        const userData = userDoc.exists() ? (userDoc.data() as UserData) : null;
+        postsArray.push({ post: postData, user: userData });
       }
       setPosts(postsArray);
       setPostsLoading(false);
-    })
-
+    });
+  
     return () => {
       unsubscribe();
       unsubscribePosts();
     };
   }, []);
+  
 
   const handleDeletePost = async (postId: string) => {
     try {
@@ -81,8 +92,8 @@ export default function Home() {
   }
 
   return (
-    <div className='w-full lg:w-[600px] flex flex-col items-center justify-center m-5'>
-      <div className='lg:w-[600px] flex flex-col items-center justify-center space-y-5'>
+    <div className='w-full md:w-[600px] flex flex-col items-center justify-center m-5'>
+      <div className='md:w-[600px] flex flex-col items-center justify-center space-y-5'>
         {postsLoading ? (
           <>
             {Array.from({ length: 3 }).map((_, index) => (
@@ -114,10 +125,10 @@ export default function Home() {
                 {post.content.length > 200 && (
                   <Button
                     variant='link'
-                    className='text-zinc-600 font-bold underline'
+                    className='text-zinc-600 w-full font-extrabold text-lg underline'
                     onClick={() => handleViewMore(post, user)}
                   >
-                    Ver mais
+                    Ler mais
                   </Button>
                 )}
               </p>
@@ -125,7 +136,8 @@ export default function Home() {
                 <img
                   src={post.imageUrl}
                   alt="Imagem do post"
-                  className="w-[400px] lg:w-[600px] h-[400px] object-cover"
+                  className="w-full h-[400px] object-cover"
+                  onClick={() => handleViewMore(post, user)}
                 />
               )}
               {auth.currentUser?.uid === post.userId && (
