@@ -29,7 +29,7 @@ jobs:
       env:
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       run: |
-        echo "$FIREBASE_SERVICE_ACCOUNT" > firebase-service-account.json
+        echo "$FIREBASE_SERVICE_ACCOUNT_POSTAROO_C83E4" > firebase-service-account.json
         firebase auth:import --account-key firebase-service-account.json
 
     - name: Deploy to Firebase
